@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://www.endless-online.com https://endless-online.com; style-src 'self'; font-src 'self'; script-src 'self'">
+<title>EO Community Launcher</title>
+<link rel="icon" href="../build/icon.ico">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="banner"><div class="fallback">Endless Online</div></div>
+  <div class="strip">
+    <span class="unofficial">Community launcher &middot; unofficial</span>
+    <nav>
+      <a href="https://www.endless-online.com/">Website</a>
+      <a href="https://game.endless-online.com/playerlist.html">Who is online</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="blog">
+    <div class="blog-head">
+      <div><span class="eyebrow">Latest news</span><h2 id="postTitle">Loading&hellip;</h2><span id="postMeta" class="muted"></span></div>
+      <select id="postPicker" aria-label="Choose dev post"></select>
+    </div>
+    <article id="postBody" class="post"></article>
+  </section>
+
+  <aside>
+    <div class="card">
+      <span class="eyebrow">Your game</span>
+      <div class="row"><span>Installed</span><b id="vInstalled">&ndash;</b></div>
+      <div class="row"><span>Latest</span><b id="vLatest">&ndash;</b></div>
+      <p id="dirLine" class="muted path"></p>
+      <div class="links"><button class="link" id="btnDir">Change folder</button><button class="link" id="btnOpen">Open folder</button><button class="link" id="btnCfg">Game settings</button></div>
+    </div>
+
+    <div class="card">
+      <span class="eyebrow">Downloads available</span>
+      <ul id="downloads" class="downloads"><li class="muted">Checking&hellip;</li></ul>
+    </div>
+
+    <div id="notice" class="notice" hidden></div>
+    <details id="report" class="card" hidden><summary>What the last update changed</summary><div id="reportBody"></div></details>
+  </aside>
+</main>
+
+<footer>
+  <div class="progress-wrap">
+    <div id="statusText">Starting&hellip;</div>
+    <div class="bar"><div id="barFill"></div></div>
+  </div>
+  <button id="btnMain" class="primary" disabled>Checking&hellip;</button>
+</footer>
+<script src="renderer.js"></script>
+</body>
+</html>

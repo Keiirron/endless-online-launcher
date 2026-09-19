@@ -1,0 +1,48 @@
+{
+  "name": "eo-community-launcher",
+  "productName": "EO Community Launcher",
+  "version": "0.1.0",
+  "description": "Unofficial community launcher and auto-updater for Endless Online",
+  "main": "main.js",
+  "author": "Keiron",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "dist": "electron-builder --win nsis"
+  },
+  "dependencies": {
+    "yauzl": "^3.1.3"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "yazl": "^2.5.1"
+  },
+  "build": {
+    "appId": "community.endlessonline.launcher",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**",
+      "renderer/**",
+      "build/icon.ico"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Keiirron/endless-online-launcher.git"
+  },
+  "homepage": "https://github.com/Keiirron/endless-online-launcher"
+}
