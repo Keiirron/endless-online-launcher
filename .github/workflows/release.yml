@@ -1,7 +1,8 @@
 name: Release
 
-# Builds the Windows installer and attaches it to a GitHub release.
-# Runs when you push a tag like v0.1.0, publish a release, or start it by hand from the Actions tab.
+# Builds the Windows installer and publishes it as a GitHub release.
+# Runs when a tag like v0.1.1 is pushed (release.bat does this), when a release is
+# published by hand, or when started from the Actions tab with a tag.
 on:
   push:
     tags: ['v*']
@@ -10,11 +11,14 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag to attach the installer to (e.g. v0.1.0)
+        description: Release tag to attach the installer to (e.g. v0.1.1)
         required: true
 
 permissions:
   contents: write
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag || github.ref_name }}
 
 concurrency:
   group: release-${{ github.event.release.tag_name || inputs.tag || github.ref_name }}
@@ -31,7 +35,34 @@ jobs:
       - run: npm install
       - run: npm test
       - run: npx electron-builder --win nsis --publish never
+
+      - name: Checksums
+        shell: pwsh
+        run: |
+          Set-Location dist
+          Get-ChildItem *Setup*.exe | ForEach-Object { "$((Get-FileHash $_ -Algorithm SHA256).Hash.ToLower())  $($_.Name)" } | Set-Content SHA256SUMS.txt
+          Get-Content SHA256SUMS.txt
+
+      - name: Release notes from CHANGELOG.md
+        shell: pwsh
+        run: |
+          $v = $env:TAG.TrimStart('v')
+          $out = @(); $on = $false
+          foreach ($l in Get-Content CHANGELOG.md) {
+            if ($l -match '^## ') { if ($on) { break }; $on = ($l.Trim() -eq "## $v"); continue }
+            if ($on) { $out += $l }
+          }
+          if (-not ($out -join '').Trim()) { $out = @("Release $env:TAG") }
+          $out += @('', 'Verify your download with `SHA256SUMS.txt`. Windows may warn that the installer is from an unknown publisher because it is not code-signed: choose More info, then Run anyway.')
+          $out | Set-Content release-notes.md
+
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.release.tag_name || inputs.tag || github.ref_name }}
-          files: dist/*Setup*.exe
+          tag_name: ${{ env.TAG }}
+          body_path: release-notes.md
+          append_body: true
+          files: |
+            dist/*Setup*.exe
+            dist/*Setup*.exe.blockmap
+            dist/latest.yml
+            dist/SHA256SUMS.txt
