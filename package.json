@@ -1,7 +1,7 @@
 {
   "name": "eo-community-launcher",
   "productName": "EO Community Launcher",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unofficial community launcher and auto-updater for Endless Online",
   "main": "main.js",
   "author": "Keiron",
