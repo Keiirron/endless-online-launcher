@@ -18,9 +18,11 @@ One button to install, update and play. Your saved logins and settings survive e
 
 ## Download
 
-Grab **EO Community Launcher Setup** from the [latest release](https://github.com/Keiirron/endless-online-launcher/releases/latest) and run it.
+Grab **EO-Community-Launcher-Setup** from the [latest release](https://github.com/Keiirron/endless-online-launcher/releases/latest) and run it.
 
 > Windows may show a "Windows protected your PC" prompt because the installer isn't code-signed. Choose **More info → Run anyway**.
+>
+> To verify a download, compare its SHA-256 with `SHA256SUMS.txt` on the release: `Get-FileHash .\EO-Community-Launcher-Setup-x.y.z.exe`
 
 ## Features
 
@@ -31,6 +33,7 @@ Grab **EO Community Launcher Setup** from the [latest release](https://github.co
 | **Smart config merge** | New settings from an update arrive, your own values are kept. Configs are backed up first. |
 | **Latest dev post** | Read the newest dev post right in the launcher, older ones in a dropdown. |
 | **Progress** | Download speed, time left, then unpack and install progress. |
+| **Updates itself** | The launcher checks GitHub for a newer version of itself and offers to restart when it's ready. |
 | **Program Files friendly** | Can move a protected install to a per-user folder and bring your data across. |
 
 <div align="center"><img src="docs/progress.png" width="820" alt="Download progress bar"></div>
@@ -73,12 +76,10 @@ test/              automated tests
 
 ## Releasing
 
-Push a version tag and GitHub builds the installer and attaches it to a new release:
+1. Add a section for the new version at the top of `CHANGELOG.md`.
+2. Double-click `release.bat` and type the version (for example `0.1.2`).
 
-```
-git tag v0.1.0
-git push origin v0.1.0
-```
+It commits, tags and pushes. GitHub then builds the installer and publishes the release with that changelog section as the notes, the checksum file, and the files the launcher's self-update needs. See [CHANGELOG.md](CHANGELOG.md) for history.
 
 ## Disclaimer
 

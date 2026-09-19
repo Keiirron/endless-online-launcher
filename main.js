@@ -91,9 +91,31 @@ ipcMain.handle('config', async () => {
   if (fs.existsSync(exe)) spawn(exe, [], { cwd: s.installDir, detached: true, stdio: 'ignore' }).unref();
 });
 
+// Launcher self-update from GitHub Releases (installed builds only).
+function checkForLauncherUpdate() {
+  if (!app.isPackaged) return;
+  let autoUpdater;
+  try { ({ autoUpdater } = require('electron-updater')); } catch { return; }
+  autoUpdater.autoDownload = true;
+  autoUpdater.on('error', () => {});
+  autoUpdater.on('update-downloaded', (info) => {
+    const ask = async () => {
+      if (busy) return setTimeout(ask, 5000);           // never interrupt a game update
+      const r = await dialog.showMessageBox(win, {
+        type: 'info', buttons: ['Restart now', 'Later'], defaultId: 0, cancelId: 1,
+        title: 'Launcher update', message: `Launcher ${info.version} is ready to install.`,
+        detail: 'Restart the launcher to finish updating. If you choose Later it installs when you close the launcher.',
+      });
+      if (r.response === 0) autoUpdater.quitAndInstall(true, true);
+    };
+    ask();
+  });
+  autoUpdater.checkForUpdates().catch(() => {});
+}
+
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });
-  app.whenReady().then(createWindow);
+  app.whenReady().then(() => { createWindow(); checkForLauncherUpdate(); });
   app.on('window-all-closed', () => app.quit());
 }
